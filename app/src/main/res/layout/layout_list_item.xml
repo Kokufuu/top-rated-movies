@@ -6,11 +6,34 @@
     android:padding="15dp">
 
     <TextView
-        android:id="@+id/movie_item"
-        android:layout_width="wrap_content"
+        android:id="@+id/movie_item_name"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="#000"
-        android:textSize="16sp"
-        android:layout_centerVertical="true" />
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/movie_item_year"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/movie_item_name"
+        android:textColor="#000"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/movie_item_vote_count"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/movie_item_year"
+        android:textColor="#000"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/movie_item_vote_average"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/movie_item_vote_count"
+        android:textColor="#000"
+        android:textSize="12sp" />
 
 </RelativeLayout>
