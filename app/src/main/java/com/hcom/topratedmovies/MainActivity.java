@@ -1,17 +1,22 @@
 package com.hcom.topratedmovies;
 
 import android.os.Bundle;
-import android.widget.TextView;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.hcom.topratedmovies.adapter.RecyclerViewAdapter;
 import com.hcom.topratedmovies.api.TopRatedApi;
 import com.hcom.topratedmovies.domain.Movie;
 import com.hcom.topratedmovies.domain.TopRatedResult;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import retrofit2.Call;
@@ -22,7 +27,11 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String TAG = "MainActivity";
+    private static final String BASE_URL = "https://api.themoviedb.org/3/";
+
     private RecyclerView recyclerView;
+    private List<Movie> movies = Collections.emptyList();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,10 +39,17 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         recyclerView = findViewById(R.id.recycler_view);
+        RecyclerViewAdapter adapter = new RecyclerViewAdapter(movies);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.super.getApplicationContext()));
+
+        Gson gson = new GsonBuilder()
+                .setLenient()
+                .create();
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://developers.themoviedb.org/3/")
-                .addConverterFactory(GsonConverterFactory.create())
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
 
         final TopRatedApi topRatedApi = retrofit.create(TopRatedApi.class);
@@ -44,19 +60,19 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<TopRatedResult> call, Response<TopRatedResult> response) {
                 if (!response.isSuccessful()) {
-                    // Set some error message
+                    Log.d(TAG, "onResponse was unsuccessful");
                     return;
                 }
+                Log.d(TAG, "onResponse was successful");
                 TopRatedResult topRatedResult = response.body();
+                Log.d(TAG, topRatedResult.toString());
                 List<Movie> movies = topRatedResult.getResults();
-                RecyclerViewAdapter adapter = new RecyclerViewAdapter(movies);
-                recyclerView.setAdapter(adapter);
-                recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.super.getApplicationContext()));
+                adapter.setMovies(movies);
             }
 
             @Override
             public void onFailure(Call<TopRatedResult> call, Throwable t) {
-                // Set some error message
+                Log.d(TAG, "onFailure: " + t.toString());
             }
         });
     }
