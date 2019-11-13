@@ -1,4 +1,4 @@
-package com.hcom.topratedmovies;
+package com.hcom.topratedmovies.activity;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -9,13 +9,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.hcom.topratedmovies.R;
 import com.hcom.topratedmovies.adapter.RecyclerViewAdapter;
 import com.hcom.topratedmovies.api.TopRatedApi;
-import com.hcom.topratedmovies.domain.Movie;
+import com.hcom.topratedmovies.domain.TvShow;
 import com.hcom.topratedmovies.domain.TopRatedResult;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -30,16 +29,15 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private static final String BASE_URL = "https://api.themoviedb.org/3/";
 
-    private RecyclerView recyclerView;
-    private List<Movie> movies = Collections.emptyList();
+    private List<TvShow> tvShows = Collections.emptyList();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        recyclerView = findViewById(R.id.recycler_view);
-        RecyclerViewAdapter adapter = new RecyclerViewAdapter(movies);
+        RecyclerView recyclerView = findViewById(R.id.recycler_view);
+        RecyclerViewAdapter adapter = new RecyclerViewAdapter(this, tvShows);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.super.getApplicationContext()));
 
@@ -52,9 +50,9 @@ public class MainActivity extends AppCompatActivity {
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
 
-        final TopRatedApi topRatedApi = retrofit.create(TopRatedApi.class);
+        TopRatedApi topRatedApi = retrofit.create(TopRatedApi.class);
 
-        Call<TopRatedResult> call = topRatedApi.getTopRatedresult();
+        Call<TopRatedResult> call = topRatedApi.getTopRatedResult();
 
         call.enqueue(new Callback<TopRatedResult>() {
             @Override
@@ -65,9 +63,8 @@ public class MainActivity extends AppCompatActivity {
                 }
                 Log.d(TAG, "onResponse was successful");
                 TopRatedResult topRatedResult = response.body();
-                Log.d(TAG, topRatedResult.toString());
-                List<Movie> movies = topRatedResult.getResults();
-                adapter.setMovies(movies);
+                List<TvShow> tvShows = topRatedResult.getResults();
+                adapter.setTvShows(tvShows);
             }
 
             @Override

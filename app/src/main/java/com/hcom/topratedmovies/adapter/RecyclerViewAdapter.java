@@ -1,5 +1,7 @@
 package com.hcom.topratedmovies.adapter;
 
+import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,41 +12,52 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.hcom.topratedmovies.R;
-import com.hcom.topratedmovies.domain.Movie;
+import com.hcom.topratedmovies.activity.DetailsActivity;
+import com.hcom.topratedmovies.domain.TvShow;
 
 import java.util.List;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
 
-    private List<Movie> movies;
+    private Context context;
+    private List<TvShow> tvShows;
 
-    public RecyclerViewAdapter(List<Movie> movies) {
-        this.movies = movies;
+    public RecyclerViewAdapter(Context context, List<TvShow> tvShows) {
+        this.context = context;
+        this.tvShows = tvShows;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_list_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Movie actual = movies.get(position);
+        TvShow actual = tvShows.get(position);
+        holder.movieId = actual.getId();
         holder.name.setText(actual.getName());
-        holder.year.setText(actual.getFirst_air_date().substring(0, 4));
-        holder.voteCount.setText("Vote count: " + actual.getVote_count());
-        holder.voteAverage.setText("Vote average: " + String.valueOf(actual.getVote_average()));
+        holder.year.setText(actual.getFirstAirDate().substring(0, 4));
+        holder.voteCount.setText("Vote count: " + actual.getVoteCount());
+        holder.voteAverage.setText("Vote average: " + String.valueOf(actual.getVoteAverage()));
+
+        holder.parentLayout.setOnClickListener(view -> {
+            Intent intent = new Intent(context, DetailsActivity.class);
+            intent.putExtra("tvShow", tvShows.get(position).getId());
+            context.startActivity(intent);
+        });
     }
 
     @Override
     public int getItemCount() {
-        return movies.size();
+        return tvShows.size();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
+        int movieId;
         RelativeLayout parentLayout;
         TextView name;
         TextView year;
@@ -61,8 +74,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         }
     }
 
-    public void setMovies(List<Movie> movies) {
-        this.movies = movies;
+    public void setTvShows(List<TvShow> tvShows) {
+        this.tvShows = tvShows;
         notifyDataSetChanged();
     }
 }

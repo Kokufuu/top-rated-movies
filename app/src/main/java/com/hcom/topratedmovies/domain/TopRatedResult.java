@@ -1,27 +1,31 @@
 package com.hcom.topratedmovies.domain;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 
 public class TopRatedResult {
 
     private int page;
-    private List<Movie> results;
-    private int total_results;
-    private int total_pages;
+    private List<TvShow> results;
+    @SerializedName("total_results")
+    private int totalResults;
+    @SerializedName("total_pages")
+    private int totalPages;
 
     public int getPage() {
         return page;
     }
 
-    public List<Movie> getResults() {
+    public List<TvShow> getResults() {
         return results;
     }
 
-    public int getTotal_results() {
-        return total_results;
+    public int getTotalResults() {
+        return totalResults;
     }
 
-    public int getTotal_pages() {
-        return total_pages;
+    public int getTotalPages() {
+        return totalPages;
     }
 }
