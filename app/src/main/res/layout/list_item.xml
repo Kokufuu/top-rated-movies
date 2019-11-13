@@ -1,41 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/parent_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="15dp"
+    android:clickable="true"
     android:focusable="true"
-    android:clickable="true" >
+    android:orientation="vertical"
+    android:padding="15dp">
 
     <TextView
         android:id="@+id/movie_item_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textStyle="bold"
         android:textColor="#000"
-        android:textSize="16sp" />
+        android:textSize="20sp" />
 
     <TextView
         android:id="@+id/movie_item_year"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/movie_item_name"
         android:textColor="#000"
         android:textSize="16sp" />
 
-    <TextView
-        android:id="@+id/movie_item_vote_count"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/movie_item_year"
-        android:textColor="#000"
-        android:textSize="12sp" />
+        android:weightSum="2"
+        android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/movie_item_vote_average"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/movie_item_vote_count"
-        android:textColor="#000"
-        android:textSize="12sp" />
+        <TextView
+            android:id="@+id/movie_item_vote_count"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textColor="#000"
+            android:textSize="12sp" />
 
-</RelativeLayout>
+        <TextView
+            android:id="@+id/movie_item_vote_average"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textColor="#000"
+            android:textSize="12sp" />
+
+    </LinearLayout>
+
+</LinearLayout>

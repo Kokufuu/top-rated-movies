@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -20,6 +21,7 @@ import java.util.List;
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
 
     private static final String INTENT_NAME = "tvShow";
+
     private Context context;
     private List<TvShow> tvShows;
 
@@ -40,15 +42,25 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         TvShow actual = tvShows.get(position);
         holder.movieId = actual.getId();
         holder.name.setText(actual.getName());
-        holder.year.setText(actual.getFirstAirDate().substring(0, 4));
-        holder.voteCount.setText(String.valueOf(actual.getVoteCount()));
-        holder.voteAverage.setText(String.valueOf(actual.getVoteAverage()));
+        String releaseText = context.getResources().getString(R.string.release_year);
+        releaseText = String.format(releaseText, extractYear(actual));
+        holder.year.setText(releaseText);
+        String voteCountText = context.getResources().getString(R.string.vote_count);
+        voteCountText = String.format(voteCountText, actual.getVoteCount());
+        holder.voteCount.setText(voteCountText);
+        String voteAvgText = context.getResources().getString(R.string.vote_average);
+        voteAvgText = String.format(voteAvgText, actual.getVoteAverage());
+        holder.voteAverage.setText(voteAvgText);
 
         holder.parentLayout.setOnClickListener(view -> {
             Intent intent = new Intent(context, DetailsActivity.class);
             intent.putExtra(INTENT_NAME, tvShows.get(position).getId());
             context.startActivity(intent);
         });
+    }
+
+    private String extractYear(TvShow actual) {
+        return actual.getFirstAirDate().substring(0, 4);
     }
 
     @Override
@@ -59,7 +71,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     class ViewHolder extends RecyclerView.ViewHolder {
 
         int movieId;
-        RelativeLayout parentLayout;
+        LinearLayout parentLayout;
         TextView name;
         TextView year;
         TextView voteCount;
