@@ -19,6 +19,7 @@ import java.util.List;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
 
+    private static final String INTENT_NAME = "tvShow";
     private Context context;
     private List<TvShow> tvShows;
 
@@ -40,12 +41,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         holder.movieId = actual.getId();
         holder.name.setText(actual.getName());
         holder.year.setText(actual.getFirstAirDate().substring(0, 4));
-        holder.voteCount.setText("Vote count: " + actual.getVoteCount());
-        holder.voteAverage.setText("Vote average: " + String.valueOf(actual.getVoteAverage()));
+        holder.voteCount.setText(String.valueOf(actual.getVoteCount()));
+        holder.voteAverage.setText(String.valueOf(actual.getVoteAverage()));
 
         holder.parentLayout.setOnClickListener(view -> {
             Intent intent = new Intent(context, DetailsActivity.class);
-            intent.putExtra("tvShow", tvShows.get(position).getId());
+            intent.putExtra(INTENT_NAME, tvShows.get(position).getId());
             context.startActivity(intent);
         });
     }

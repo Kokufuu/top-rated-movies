@@ -3,17 +3,17 @@ package com.hcom.topratedmovies.activity;
 import android.os.Bundle;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.hcom.topratedmovies.R;
 import com.hcom.topratedmovies.adapter.RecyclerViewAdapter;
 import com.hcom.topratedmovies.api.TopRatedApi;
-import com.hcom.topratedmovies.domain.TvShow;
 import com.hcom.topratedmovies.domain.TopRatedResult;
+import com.hcom.topratedmovies.domain.TvShow;
+import com.hcom.topratedmovies.factory.HttpClientFactory;
 
 import java.util.Collections;
 import java.util.List;
@@ -21,15 +21,20 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
-    private static final String BASE_URL = "https://api.themoviedb.org/3/";
+    private static final String ON_RESPONSE_UNSUCCESSFUL = "onResponse was unsuccessful";
+    private static final String ON_FAILURE = "onFailure: ";
 
-    private List<TvShow> tvShows = Collections.emptyList();
+    private TopRatedApi topRatedApi;
+    private List<TvShow> tvShows;
+
+    public MainActivity() {
+        this.topRatedApi = HttpClientFactory.createClient();
+        this.tvShows = Collections.emptyList();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,39 +42,25 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
         RecyclerViewAdapter adapter = new RecyclerViewAdapter(this, tvShows);
         recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.super.getApplicationContext()));
-
-        Gson gson = new GsonBuilder()
-                .setLenient()
-                .create();
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
-
-        TopRatedApi topRatedApi = retrofit.create(TopRatedApi.class);
 
         Call<TopRatedResult> call = topRatedApi.getTopRatedResult();
 
         call.enqueue(new Callback<TopRatedResult>() {
             @Override
-            public void onResponse(Call<TopRatedResult> call, Response<TopRatedResult> response) {
-                if (!response.isSuccessful()) {
-                    Log.d(TAG, "onResponse was unsuccessful");
-                    return;
+            public void onResponse(@NonNull Call<TopRatedResult> call, @NonNull Response<TopRatedResult> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    adapter.setTvShows(response.body().getResults());
+                } else {
+                    Log.d(TAG, ON_RESPONSE_UNSUCCESSFUL);
                 }
-                Log.d(TAG, "onResponse was successful");
-                TopRatedResult topRatedResult = response.body();
-                List<TvShow> tvShows = topRatedResult.getResults();
-                adapter.setTvShows(tvShows);
             }
 
             @Override
-            public void onFailure(Call<TopRatedResult> call, Throwable t) {
-                Log.d(TAG, "onFailure: " + t.toString());
+            public void onFailure(@NonNull Call<TopRatedResult> call, @NonNull Throwable t) {
+                Log.d(TAG, ON_FAILURE + t.toString());
             }
         });
     }

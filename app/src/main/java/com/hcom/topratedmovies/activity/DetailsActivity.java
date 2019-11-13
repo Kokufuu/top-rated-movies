@@ -2,119 +2,64 @@ package com.hcom.topratedmovies.activity;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.ImageView;
-import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.bumptech.glide.Glide;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.hcom.topratedmovies.R;
 import com.hcom.topratedmovies.api.TopRatedApi;
-import com.hcom.topratedmovies.domain.Genre;
 import com.hcom.topratedmovies.domain.TvShowDetails;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.hcom.topratedmovies.factory.HttpClientFactory;
+import com.hcom.topratedmovies.service.DetailsPopulator;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class DetailsActivity extends AppCompatActivity {
 
     private static final String TAG = "DetailsActivity";
-    private static final String BASE_URL = "https://api.themoviedb.org/3/";
-    private static final String IMAGE_BASE_URL = "https://image.tmdb.org/t/p/original";
+    private static final String ON_RESPONSE_UNSUCCESSFUL = "onResponse was unsuccessful";
+    private static final String ON_FAILURE = "onFailure: ";
+    private static final String INTENT_NAME = "tvShow";
+    private static final int DEFAULT_VALUE = 0;
+
+    private TopRatedApi topRatedApi;
+
+    public DetailsActivity() {
+        this.topRatedApi = HttpClientFactory.createClient();
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
-        int tvShowId = getIdFromIncomingIntent();
 
-        Gson gson = new GsonBuilder()
-                .setLenient()
-                .create();
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
-
-        TopRatedApi topRatedApi = retrofit.create(TopRatedApi.class);
-
-        Call<TvShowDetails> call = topRatedApi.getDetailsById(tvShowId);
+        Call<TvShowDetails> call = topRatedApi.getDetailsById(getIdFromIncomingIntent());
 
         call.enqueue(new Callback<TvShowDetails>() {
             @Override
-            public void onResponse(Call<TvShowDetails> call, Response<TvShowDetails> response) {
-                if (!response.isSuccessful()) {
-                    Log.d(TAG, "onResponse was unsuccessful");
-                    return;
+            public void onResponse(@NonNull Call<TvShowDetails> call, @NonNull Response<TvShowDetails> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    DetailsPopulator.populateDetails(DetailsActivity.this, response.body());
+                } else {
+                    Log.d(TAG, ON_RESPONSE_UNSUCCESSFUL);
                 }
-                Log.d(TAG, "onResponse was successful");
-                TvShowDetails details = response.body();
-                populateDetailsLayout(details);
             }
 
             @Override
-            public void onFailure(Call<TvShowDetails> call, Throwable t) {
-                Log.d(TAG, "onFailure: " + t.toString());
+            public void onFailure(@NonNull Call<TvShowDetails> call, @NonNull Throwable t) {
+                Log.d(TAG, ON_FAILURE + t.toString());
             }
         });
     }
 
     private int getIdFromIncomingIntent() {
-        int id = 0;
-        if(getIntent().hasExtra("tvShow")) {
-            id = getIntent().getIntExtra("tvShow", 0);
+        int id = DEFAULT_VALUE;
+        if (getIntent().hasExtra(INTENT_NAME)) {
+            id = getIntent().getIntExtra(INTENT_NAME, DEFAULT_VALUE);
         }
         return id;
-    }
-
-    private void populateDetailsLayout(TvShowDetails details) {
-        String posterPath = details.getPosterPath();
-        String name = details.getName();
-        String overview = details.getOverview();
-        List<Genre> genres = details.getGenres();
-        String originalLanguage = details.getOriginalLanguage();
-        float popularity = details.getPopularity();
-        int voteCount = details.getVoteCount();
-
-        ImageView imageView = findViewById(R.id.details_image);
-        Glide.with(this)
-                .asBitmap()
-                .load(IMAGE_BASE_URL + posterPath)
-                .into(imageView);
-        TextView viewName = findViewById(R.id.details_name);
-        viewName.setText(name);
-        TextView viewOverview = findViewById(R.id.details_overview);
-        viewOverview.setText(overview);
-        TextView viewGenres = findViewById(R.id.details_genres);
-        viewGenres.setText(createGenreList(genres));
-        TextView viewLanguage = findViewById(R.id.details_original_language);
-        viewLanguage.setText(originalLanguage);
-        TextView viewPopularity = findViewById(R.id.details_popularity);
-        viewPopularity.setText(String.valueOf(popularity));
-        TextView viewVoteCount = findViewById(R.id.details_vote_count);
-        viewVoteCount.setText(""+voteCount);
-    }
-
-    private String createGenreList(List<Genre> genres) {
-        StringBuilder genreList = new StringBuilder();
-        for (Genre genre : genres) {
-            if (genreList.length() == 0) {
-                genreList.append(genre.getName());
-            } else {
-                genreList.append(", ");
-                genreList.append(genre.getName());
-            }
-        }
-        return genreList.toString();
     }
 }
