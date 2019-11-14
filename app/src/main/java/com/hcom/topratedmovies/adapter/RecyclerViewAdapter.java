@@ -2,12 +2,10 @@ package com.hcom.topratedmovies.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -22,6 +20,7 @@ import java.util.List;
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
 
     private static final String INTENT_NAME = "tvShow";
+    private static final int BACKGROUND_COLOR = 0xFFF2F2F2;
 
     private Context context;
     private List<TvShow> tvShows;
@@ -40,6 +39,16 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        populateLayoutData(holder, position);
+        improveVisibilityWithBackgroundColor(holder, position);
+        holder.parentLayout.setOnClickListener(view -> {
+            Intent intent = new Intent(context, DetailsActivity.class);
+            intent.putExtra(INTENT_NAME, tvShows.get(position).getId());
+            context.startActivity(intent);
+        });
+    }
+
+    private void populateLayoutData(@NonNull ViewHolder holder, int position) {
         TvShow actual = tvShows.get(position);
         holder.movieId = actual.getId();
         holder.name.setText(actual.getName());
@@ -52,14 +61,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         String voteAvgText = context.getResources().getString(R.string.vote_average);
         voteAvgText = String.format(voteAvgText, actual.getVoteAverage());
         holder.voteAverage.setText(voteAvgText);
+    }
+
+    private void improveVisibilityWithBackgroundColor(@NonNull ViewHolder holder, int position) {
         if (position % 2 == 0) {
-            holder.parentLayout.setBackgroundColor(0xFFF2F2F2);
+            holder.parentLayout.setBackgroundColor(BACKGROUND_COLOR);
         }
-        holder.parentLayout.setOnClickListener(view -> {
-            Intent intent = new Intent(context, DetailsActivity.class);
-            intent.putExtra(INTENT_NAME, tvShows.get(position).getId());
-            context.startActivity(intent);
-        });
     }
 
     private String extractYear(TvShow actual) {
