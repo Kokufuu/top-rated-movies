@@ -2,6 +2,7 @@ package com.hcom.topratedmovies.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,7 +52,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         String voteAvgText = context.getResources().getString(R.string.vote_average);
         voteAvgText = String.format(voteAvgText, actual.getVoteAverage());
         holder.voteAverage.setText(voteAvgText);
-
+        if (position % 2 == 0) {
+            holder.parentLayout.setBackgroundColor(0xFFF2F2F2);
+        }
         holder.parentLayout.setOnClickListener(view -> {
             Intent intent = new Intent(context, DetailsActivity.class);
             intent.putExtra(INTENT_NAME, tvShows.get(position).getId());

@@ -2,6 +2,9 @@
     <string name="app_name">TopRatedMovies</string>
     <string name="action_settings">Settings</string>
     <string name="vote_count">Vote count: %d</string>
-    <string name="vote_average">Vote average: %.1f</string>
+    <string name="vote_average">Vote average: %.2f</string>
     <string name="release_year">Released: %s</string>
+    <string name="language">Language: %s</string>
+    <string name="popularity">Popularity: %.2f</string>
+    <string name="poster">poster</string>
 </resources>

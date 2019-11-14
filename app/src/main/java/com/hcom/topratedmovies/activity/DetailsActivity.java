@@ -2,6 +2,8 @@ package com.hcom.topratedmovies.activity;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Window;
+import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -34,6 +36,9 @@ public class DetailsActivity extends AppCompatActivity {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().hide();
+        }
         setContentView(R.layout.activity_details);
 
         Call<TvShowDetails> call = topRatedApi.getDetailsById(getIdFromIncomingIntent());

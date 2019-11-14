@@ -12,13 +12,14 @@
             android:id="@+id/details_image"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:scaleType="centerCrop" />
+            android:scaleType="centerCrop"
+            android:contentDescription="@string/poster"/>
 
         <TextView
             android:id="@+id/details_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="20dp"
+            android:padding="12dp"
             android:textColor="#000"
             android:textSize="24sp"
             android:textStyle="bold" />
@@ -27,8 +28,10 @@
             android:id="@+id/details_overview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:justificationMode="inter_word"
+            android:background="#f2f2f2"
+            android:padding="12dp"
             android:paddingBottom="12dp"
+            android:justificationMode="inter_word"
             android:textColor="#000"
             android:textSize="16sp" />
 
@@ -36,32 +39,39 @@
             android:id="@+id/details_genres"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="8dp"
+            android:paddingRight="12dp"
+            android:paddingLeft="12dp"
             android:textColor="#000"
-            android:textSize="12sp" />
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/details_original_language"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="8dp"
+            android:background="#f2f2f2"
+            android:paddingRight="12dp"
+            android:paddingLeft="12dp"
             android:textColor="#000"
-            android:textSize="12sp" />
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/details_popularity"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="8dp"
+            android:paddingRight="12dp"
+            android:paddingLeft="12dp"
             android:textColor="#000"
-            android:textSize="12sp" />
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/details_vote_count"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="#f2f2f2"
+            android:paddingRight="12dp"
+            android:paddingLeft="12dp"
             android:textColor="#000"
-            android:textSize="12sp" />
+            android:textSize="14sp" />
 
     </LinearLayout>
 

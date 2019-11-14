@@ -41,10 +41,16 @@ public class DetailsPopulator {
         TextView viewGenres = activity.findViewById(R.id.details_genres);
         viewGenres.setText(genres.stream().map(Genre::getName).collect(Collectors.joining(DELIMITER)));
         TextView viewLanguage = activity.findViewById(R.id.details_original_language);
-        viewLanguage.setText(originalLanguage);
+        String languageText = context.getResources().getString(R.string.language);
+        languageText = String.format(languageText, originalLanguage);
+        viewLanguage.setText(languageText);
         TextView viewPopularity = activity.findViewById(R.id.details_popularity);
-        viewPopularity.setText(String.valueOf(popularity));
+        String popularityText = context.getResources().getString(R.string.popularity);
+        popularityText = String.format(popularityText, popularity);
+        viewPopularity.setText(popularityText);
         TextView viewVoteCount = activity.findViewById(R.id.details_vote_count);
-        viewVoteCount.setText(String.valueOf(voteCount));
+        String voteCountText = context.getResources().getString(R.string.vote_count);
+        voteCountText = String.format(voteCountText, voteCount);
+        viewVoteCount.setText(voteCountText);
     }
 }
